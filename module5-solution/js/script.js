@@ -14,12 +14,10 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
   var dc = {};
 
   var homeHtmlUrl = "snippets/home-snippet.html";
-  var allCategoriesUrl =
-    "https://davids-restaurant.herokuapp.com/categories.json";
+  var allCategoriesUrl = "https://davids-restaurant.herokuapp.com/categories.json";
   var categoriesTitleHtml = "snippets/categories-title-snippet.html";
   var categoryHtml = "snippets/category-snippet.html";
-  var menuItemsUrl =
-    "https://davids-restaurant.herokuapp.com/menu_items.json?category=";
+  var menuItemsUrl = "https://davids-restaurant.herokuapp.com/menu_items.json?category=";
   var menuItemsTitleHtml = "snippets/menu-items-title.html";
   var menuItemHtml = "snippets/menu-item.html";
 
@@ -82,20 +80,15 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
     // On first load, show home view
     showLoading("#main-content");
     $ajaxUtils.sendGetRequest(
-      homeHtmlUrl,
-      function (responseText) {
-        document.querySelector("#main-content")
-          .innerHTML = responseText;
-      },
+      allCategoriesUrl,
+      buildAndShowHomeHTML, // ***** <---- TODO: STEP 1: Substitute [...] ******
       true); // Explicitly setting the flag to get JSON from server processed into an object literal
   });
   // *** finish **
 
-
   // Builds HTML for the home page based on categories array
   // returned from the server.
   function buildAndShowHomeHTML (categories) {
-
     // Load home snippet page
     $ajaxUtils.sendGetRequest(
       homeHtmlUrl,
@@ -105,7 +98,9 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
         // Pay attention to what type of data that function returns vs what the chosenCategoryShortName
         // variable's name implies it expects.
         // var chosenCategoryShortName = ....
-        $ajaxUtils.sendGetRequest
+        switchMenuToActive();
+
+        var chosenCategoryShortName = chooseRandomCategory(categories);
 
         // TODO: STEP 3: Substitute {{randomCategoryShortName}} in the home html snippet with the
         // chosen category from STEP 2. Use existing insertProperty function for that purpose.
@@ -119,12 +114,15 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
         // it into the home html snippet.
         //
         // var homeHtmlToInsertIntoMainPage = ....
-
+        var html = homeHtml;
+        var short_name = chosenCategoryShortName.short_name;
+        html = insertProperty(html, "randomCategoryShortName", short_name);
 
         // TODO: STEP 4: Insert the the produced HTML in STEP 3 into the main page
         // Use the existing insertHtml function for that purpose. Look through this code for an example
         // of how to do that.
         // ....
+        insertHtml("#main-content", html);
 
       },
       false); // False here because we are getting just regular HTML from the server, so no need to process JSON.
@@ -134,12 +132,11 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
   // Given array of category objects, returns a random category object.
   function chooseRandomCategory (categories) {
     // Choose a random index into the array (from 0 inclusively until array length (exclusively))
+    
     var randomArrayIndex = Math.floor(Math.random() * categories.length);
-
     // return category object with that randomArrayIndex
     return categories[randomArrayIndex];
   }
-
 
   // Load the menu categories view
   dc.loadMenuCategories = function () {
@@ -171,6 +168,7 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
         $ajaxUtils.sendGetRequest(
           categoryHtml,
           function (categoryHtml) {
+            
             // Switch CSS class active to menu button
             switchMenuToActive();
 
@@ -191,7 +189,6 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
   function buildCategoriesViewHtml(categories,
                                   categoriesTitleHtml,
                                   categoryHtml) {
-
     var finalHtml = categoriesTitleHtml;
     finalHtml += "<section class='row'>";
 
