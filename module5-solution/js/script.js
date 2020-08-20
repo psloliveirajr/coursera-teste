@@ -82,7 +82,7 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
     $ajaxUtils.sendGetRequest(
       allCategoriesUrl,
       buildAndShowHomeHTML, // ***** <---- TODO: STEP 1: Substitute [...] ******
-      false); // Explicitly setting the flag to get JSON from server processed into an object literal
+      true); // Explicitly setting the flag to get JSON from server processed into an object literal
   });
   // *** finish **
 
@@ -125,7 +125,7 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
         insertHtml("#main-content", html);
 
       },
-      false); // False here because we are getting just regular HTML from the server, so no need to process JSON.
+      true); // False here because we are getting just regular HTML from the server, so no need to process JSON.
   }
 
 
